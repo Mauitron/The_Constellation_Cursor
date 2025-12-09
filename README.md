@@ -233,14 +233,14 @@ between the compossitor and the drm cursor plane.
 
 ```bash
 # Clone the repository
-git clone https://github.com/user/drm_constellation_cursor
+git clone https://github.com/Mauitron/the_constellation_cursor
 cd drm_constellation_cursor
 
 # Build release
 cargo build --release
 
 # The library is at:
-# target/release/libdrm_constellation_cursor.so
+# target/release/libthe_constellation_cursor.so
 ```
 
 ## Usage
@@ -249,7 +249,7 @@ cargo build --release
 
 ```bash
 # Launch your compositor with the cursor. If you are on hyprland, like so:
-LD_PRELOAD=/path/to/libdrm_constellation_cursor.so Hyprland
+LD_PRELOAD=/path/to/libthe_constellation_cursor.so Hyprland
 ```
 
 ### With a Display Manager (greetd, etc.)
