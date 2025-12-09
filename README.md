@@ -11,7 +11,7 @@ Which allows for a true system cursor rendering without compositor involvement.
 Should works with any Wayland compositor using atomic modesetting.
 
 > **Note:** This is a somewhat hacky workaround that intercepts DRM calls.
-> Use at your own risk. See [Issues/Limitations](#issues/limitations) below.
+> Use at your own risk. See [Issues/Limitations](#issues-&-limitations) below.
 
 ## Why does this exist?
 
@@ -202,7 +202,7 @@ The hotspot should be at the cursor's "tip" for proper click positioning.
 **Note:** Custom designs require a rebuild and compositor restart.
 For the moment the runtime control files only switch between the built-in cursor types.
 
-## Issues/Limitations
+## Issues & Limitations
 
 Known Issues
 - Slight cursor re-adjustments happen when moving across certain areas
