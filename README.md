@@ -5,35 +5,225 @@
 [![Rust](https://img.shields.io/badge/Rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
 
 A Rust LD_PRELOAD library that renders a vector cursor directly on the DRM hardware cursor plane.
-Works with any Wayland compositor using atomic modesetting.
+Which allows for a true system cursor rendering without compositor involvement. 
+Should works with any Wayland compositor using atomic modesetting.
 
-> **Note:** This is an experimental workaround that intercepts DRM calls.
-> Use at your own risk. See [Limitations](#limitations) below.
+> **Note:** This is a somewhat hacky workaround that intercepts DRM calls.
+> Use at your own risk. See [Issues/Limitations](#issues/limitations) below.
 
 ## Why does this exist?
 
-Many Wayland users experience cursor issues. corruption, lag, or invisibility (especially on NVIDIA).
-The common fix is `WLR_NO_HARDWARE_CURSORS=1` which *disables* hardware cursors entirely,
+Many Wayland users has experience cursor issues (me included). Such as, and probably not limited to:
+corruption, lag, or invisibility (especially on NVIDIA).
+The common fix for this is `WLR_NO_HARDWARE_CURSORS=1` which *disables* hardware cursors entirely,
 falling back to software rendering.
 
-This library takes the opposite approach: it *forces* the hardware cursor plane to work by intercepting
+The Constellation Cursor takes the opposite approach: it *forces* the hardware cursor plane to work by intercepting
 DRM calls and rendering a custom vector cursor directly to the cursor plane. Because, ofcourse it does.
 
-**Benefits:**
+**Features:**
+- **Compositor agnostic** Which means it should Work with Hyprland, Sway, and others
+- **Multi-Layer Design** Allowing for more detailed and targeted designs
+- **Transparency** Make the cursor, or parts of the cursor, see-through.
+- **System Cursor** Meaning, the same cursor for everything, not per app based.
 - **Always on top** Means the Hardware cursor plane is your daddy...
                     Also, that it is composited by the GPU, not the compositor
 - **Input passthrough** Means it should Work exactly like a normal cursor
 - **Resolution independent** Because vector-based rendering scales cleanly
-- **Compositor agnostic** Which means it should Work with Hyprland, Sway, and others
 
-## Limitations
+## Configuration File
 
+The library automatically creates and reads a config file at `~/.config/constellation/cursor.conf`. This file is created with default values on first run.
+
+### Config Options
+
+```ini
+# Constellation Cursor Config
+# Edit this file to customize cursor behavior
+#
+# Changes are detected automatically when you save this file.
+# To manually refresh use: touch /tmp/constellation_cursor_refresh
+
+# Cursor size multiplier (default 1.5)
+cursor_scale=2.5
+
+# Outline thickness override (0 = use cursor default, 0.5-5.0 for custom)
+outline_thickness=5
+
+# Enable fade-out effect when cursor hides (runs in background thread)
+# (Buggy)
+fade_enabled=false
+
+# Enable fade-in effect when cursor appears
+# (Buggy)
+fade_in_enabled=false
+
+# Fade speed (1-255, higher = faster fade)
+fade_speed=30
+
+# Frosted glass intensity (0-100)
+# (Doesn't look great at the moment)
+frost_intensity=0
+
+# Smooth hotspot transitions between cursor types
+# For positional syncing, is likely to cause issues if not needed
+hotspot_smoothing=false
+
+# Threshold for hotspot change detection (pixels)
+hotspot_threshold=0
+
+# --- Config Hot-Reload Settings ---
+# The cursor library can automatically detect when this file changes.
+# Set to false to disable automatic reloading (saves a tiny bit of CPU).
+# To re-enable: edit this file to set config_polling=true, then run:
+#   touch /tmp/constellation_cursor_refresh
+config_polling=true
+
+# How often to check for config changes (number of cursor moves between checks)
+# Lower = more responsive, Higher = less CPU. Default: 50
+config_poll_interval=50
+
+```
+
+### Config Details
+
+| Setting | Values | Description |
+|---------|--------|-------------|
+| `cursor_scale` | `0.5-10.0` | Cursor size multiplier (1.5 = default) |
+| `outline_thickness` | `0-5.0` | Outline thickness override (0 = use cursor default) |
+| `fade_enabled` | `true`/`false` | Enable smooth fade-out when cursor hides (runs in background) |
+| `fade_in_enabled` | `true`/`false` | Enable smooth fade-in when cursor appears |
+| `fade_speed` | `1-255` | How fast cursor fades (higher = faster) |
+| `frost_intensity` | `0-100` | Frosted glass effect strength (0 = disabled, 100 = full) |
+| `hotspot_smoothing` | `true`/`false` | Smooth cursor position when hotspot changes |
+| `hotspot_threshold` | `0-50` | Pixel threshold before hotspot smoothing triggers |
+| `config_polling` | `true`/`false` | Enable automatic config reload on file save |
+| `config_poll_interval` | `1-1000` | Cursor moves between config file checks (50 = default) |
+
+### Editing Config
+
+```bash
+# Edit with your preferred editor
+nano ~/.config/constellation/cursor.conf
+
+# Or use sed for quick changes
+sed -i 's/fade_enabled=false/fade_enabled=true/' ~/.config/constellation/cursor.conf
+```
+
+**Note:** By default, config changes are detected automatically when you save the file - just move the cursor and the new settings apply. No restart needed.
+
+If you've disabled `config_polling`, manually trigger a refresh:
+```bash
+touch /tmp/constellation_cursor_refresh
+```
+
+## Environment Variables
+
+Environment variables are read at startup and **override config file settings**.
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `CONSTELLATION_CURSOR_TYPE` | Initial cursor type | `CONSTELLATION_CURSOR_TYPE=pointer` |
+| `CONSTELLATION_CURSOR_SCALE` | Initial cursor scale | `CONSTELLATION_CURSOR_SCALE=2.0` |
+| `CONSTELLATION_CURSOR_DEBUG` | Enable debug logging | `CONSTELLATION_CURSOR_DEBUG=1` |
+| `CONSTELLATION_CURSOR_INFO` | Show version info | `CONSTELLATION_CURSOR_INFO=1` |
+| `CONSTELLATION_CURSOR_FADE` | Enable fade effect | `CONSTELLATION_CURSOR_FADE=1` |
+### Important: The Refresh File
+
+You can change some of these at runtime with the refresh file. 
+If type or scale files are **not applied automatically**.
+You must touch the refresh file to trigger a re-render:
+
+```bash
+# This WILL NOT change the scale of the cursor:
+echo "2.1" > /tmp/constellation_cursor_scale
+
+# This WILL change the cursor:
+echo "2.1" > /tmp/constellation_cursor_scale && touch /tmp/constellation_cursor_refresh
+```
+
+The same applies to runtime cursor shape changes
+
+```bash
+# Change to hourglass/wait cursor
+echo "wait" > /tmp/constellation_cursor_type && touch /tmp/constellation_cursor_refresh
+
+# Change back to default arrow
+echo "default" > /tmp/constellation_cursor_type && touch /tmp/constellation_cursor_refresh
+```
+
+**Available cursor types:**
+- `default` / `arrow` - Standard constellation arrow cursor (will change)
+- `pointer` / `hand` - Clickable element cursor (a normal copy/pasted cursor) 
+- `text` / `ibeam` - Text input cursor (I-beam, if you squint)
+- `crosshair` / `cross` - Precision selection cursor (currently off-center for extra precision)
+- `wait` / `loading` / `busy` - Loading/busy cursor (hourglass if you are generous)
+- `grab` / `grabbing` - Draggable element cursor (a testament to my superior design capabilities)
+- `not-allowed` / `forbidden` / `no` - Prohibited action cursor (slightly missaligned for hotspot alignment)
+
+
+## Custom Cursor Design
+
+### Using the Designer
+
+Open `cursor_designer.html` in your browser to create custom cursor shapes.
+
+**Drawing Controls:**
+- **Click empty space** - Add point
+- **Drag point** - Move it
+- **Shift+drag point** - Convert to Bezier curve
+- **Right-click point** - Delete it
+- **Ctrl+drag** - Box select multiple points
+- **Multiple points selected + Shift+drag point** - Rotate the points
+- **Delete key** - Remove selected points
+
+**Multi-Select Features:**
+When multiple points are selected (via Ctrl+drag), a Transform panel appears:
+- **Rotate slider** - Rotate selected points around their center
+- **Scale slider** - Scale selected points
+- **Apply** - Commit the transformation
+- **Reset** - Revert to original positions
+
+**Bounds Validation:**
+The designer warns if the first point (cursor hotspot) is not near (0,0). 
+The hotspot should be at the cursor's "tip" for proper click positioning.
+
+### Applying Custom Designs
+
+1. Design your cursor in the designer
+2. Go to **Export** tab
+3. Click **Download All Cursors** to get Rust code
+4. Replace the cursor functions in `src/lib.rs`
+5. Rebuild: `cargo build --release`
+6. **Restart your compositor** to load the new design
+
+**Note:** Custom designs require a rebuild and compositor restart.
+For the moment the runtime control files only switch between the built-in cursor types.
+
+## Issues/Limitations
+
+Known Issues
+- Slight cursor re-adjustments happen when moving across certain areas
+  this is likely due to the compositor/app changing the hotspot position
+- The fade out effect currently hinders keyboard input at cursor position
+  when keyboard input is tied to hiding the mouse cursor
+- The frost effect AND the fade out/in effects look bad.
+- Import function in the designer is currently not loading and displaying the
+  imported design.
+
+Limitations
 - May not work with all GPU vendors (tested on my NVIDIA RTX 3080)
 - Might conflict with future kernel/driver changes
 - LD_PRELOAD approach is likely fragile
-- Single cursor shape for now (no automatic hand/I-beam switching yet)
+- Needs manual cursor signaling to for changing the cursor
+  
 
 ## Installation
+
+As I am currently on Hyprland, I will be using it in the examples.
+You do not need to use Hyprland for the cursor to work. It bypasses
+the Wayland compositor by using evdev and intercepting instructions
+between the compossitor and the drm cursor plane.
 
 ### From Source
 
@@ -58,28 +248,14 @@ cargo build --release
 LD_PRELOAD=/path/to/libdrm_constellation_cursor.so Hyprland
 ```
 
-### Hyprland
-
-Add to your Hyprland config or wrapper script:
-
-```bash
-#!/bin/bash
-export LD_PRELOAD=/path/to/libdrm_constellation_cursor.so
-exec Hyprland
-```
-
 ### With a Display Manager (greetd, etc.)
 
-Create a wrapper script:
-
-```bash
-# /usr/local/bin/hyprland-constellation
-#!/bin/bash
-export LD_PRELOAD=/usr/lib/libdrm_constellation_cursor.so
-exec /usr/bin/Hyprland "$@"
 ```
+Add the above flag to your start command.
+LD_PRELOAD=/path/to/the/libdrm_constellation_cursor.so Hyprland
+or replace 'Hyprland' with whatever compositor you are using
 
-Then point your display manager to use `hyprland-constellation` instead of `Hyprland`.
+```
 
 ## Environment Variables
 
