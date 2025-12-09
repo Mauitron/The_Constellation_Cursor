@@ -114,7 +114,7 @@ sed -i 's/fade_enabled=false/fade_enabled=true/' ~/.config/constellation_cursor/
 
 **Note:** By default, config changes are detected automatically when you save the file - just move the cursor and the new settings apply. No restart needed.
 
-If you've disabled `config_polling`, manually trigger a refresh:
+If you've disabled `config_polling`, or the automatic config reload does not work, manually trigger a refresh with:
 ```bash
 touch /tmp/constellation_cursor_refresh
 ```
