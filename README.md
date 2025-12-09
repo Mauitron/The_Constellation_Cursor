@@ -211,6 +211,8 @@ Known Issues
 - The frost effect AND the fade out/in effects look bad.
 - Import function in the designer is currently not loading and displaying the
   imported design.
+- Slight hotspot miss-alignment most likely caused by runtime scale change
+  and/or compositor sync instructions.
 
 Limitations
 - May not work with all GPU vendors (tested on my NVIDIA RTX 3080)
