@@ -1,4 +1,4 @@
-# The_Constellation_Cursor
+# The Constellation Cursor
 ![recording-20251208-004815](https://github.com/user-attachments/assets/1c008e0d-f1ef-4f22-a0c7-6d5894d807c3)
 
 
