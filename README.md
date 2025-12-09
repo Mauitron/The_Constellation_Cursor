@@ -392,6 +392,7 @@ FB replacement gracefully. If that is the case try:
 3. File an issue with debug logs and I'll get around to it eventually
 
 ## Contributing
+***If you like The Constellation Cursor and want to support the project, please consider feeding me some [Pizza](https://buymeacoffee.com/charon0) 🍕***
 
 1. Fork the repository
 2. Create a feature branch
@@ -399,6 +400,9 @@ FB replacement gracefully. If that is the case try:
 4. Run `cargo build --release` to verify
 5. Submit a pull request
 6. Await JUDGEMENT!
+
+Extra bonus points if you fix my awesome cursor designs...
+Or just create your own and share them!
 
 ## License
 
