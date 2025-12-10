@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, constellationCursorPkg, ... }:
 
 let
   cfg = config.programs.constellation-cursor;
