@@ -41,4 +41,5 @@ homeManagerModules.constellation-cursor = { config, lib, pkgs, ... }:
     inherit config lib pkgs;
     constellationCursorPkg = self.packages.${pkgs.system}.default;
   };
+ };
 }
