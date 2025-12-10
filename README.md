@@ -244,6 +244,53 @@ cargo build --release
 # target/release/libthe_constellation_cursor.so
 ```
 
+## NixOS (Flakes + Home Manager)
+```nix
+1. Add the flake input
+constellation-cursor = {
+  url = "github:keygenesis/The_Constellation_Cursor";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+2. Add the Home Manager module to your system configuration
+```nix
+modules = [
+  home-manager.nixosModules.home-manager
+  inputs.constellation-cursor.homeManagerModules.constellation-cursor
+];
+```
+3. Enable the program in home.nix
+```nix
+programs.constellation-cursor = {
+  enable = true;
+  
+  # Required: install the package from the flake
+  package = inputs.constellation-cursor.packages.${pkgs.system}.default;
+
+  # Optional
+  settings = {
+    cursor_scale = 1.5;
+    outline_thickness = 0.0;
+    fade_enabled = false;
+    fade_in_enabled = false;
+    fade_speed = 30;
+    frost_intensity = 0;
+    hotspot_smoothing = false;
+    hotspot_threshold = 0;
+    config_polling = true;
+    config_poll_interval = 50;
+  };
+};
+```
+
+The module will:
+
+Write the configuration file to ~/.config/constellation_cursor/cursor.conf
+
+Set LD_PRELOAD to load the cursor library
+
+A logout/login may be required after rebuilding.
+
 ## Usage
 
 ### Quick Start
