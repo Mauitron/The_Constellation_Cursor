@@ -5,7 +5,7 @@ pkgs.rustPlatform.buildRustPackage rec {
   version = "0.1.0";
 
   src = pkgs.fetchFromGitHub {
-    owner = "Mauitron";
+    owner = "keygenesis";
     repo = "The_Constellation_Cursor";
     rev = "main";
     sha256 = "sha256-zc0rE8yw4NiEiVkXlXcIDTxqQsuzQaTYMV23sRVw6Gs=";
@@ -14,7 +14,7 @@ pkgs.rustPlatform.buildRustPackage rec {
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
     outputHashes = {
-      sha256 = "0sz8f0av3dsx67ca8hdkrd16lg0d11vra5sri62diq5hrh9jpkfd";
+      sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     };
   };
 
