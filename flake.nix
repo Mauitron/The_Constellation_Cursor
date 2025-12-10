@@ -36,7 +36,7 @@
         }
       );
 
-homeManagerModules.constellation-cursor = { config, lib, pkgs, ... }:
+homeManagerModules.defau = { config, lib, pkgs, ... }:
   import ./nix/hm-module.nix;
  };
 }
