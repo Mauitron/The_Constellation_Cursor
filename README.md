@@ -206,7 +206,8 @@ For the moment the runtime control files only switch between the built-in cursor
 
 Known Issues
 - Slight cursor re-adjustments happen when moving across certain areas
-  this is likely due to the compositor/app changing the hotspot position
+  this is likely due to the compositor/app changing the hotspot position.
+  Seems to happen because the underlying cursor shape changes.
 - The fade out effect currently hinders keyboard input at cursor position
   when keyboard input is tied to hiding the mouse cursor
 - The frost effect AND the fade out/in effects look bad.
