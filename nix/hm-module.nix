@@ -40,7 +40,7 @@ in
   config = lib.mkIf cfg.enable {
     home.file.".config/constellation_cursor/cursor.conf".text = configFile;
 
-    home.sessionVariables.LD_PRELOAD =
-      "${pkgs.the-constellation-cursor}/lib/libthe_constellation_cursor.so";
+  home.sessionVariables.LD_PRELOAD =
+    "${constellationCursorPkg}/lib/libthe_constellation_cursor.so";
   };
 }

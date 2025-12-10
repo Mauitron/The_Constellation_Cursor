@@ -36,8 +36,10 @@
         }
       );
 
-      homeManagerModules = {
-        constellation-cursor = import ./nix/hm-module.nix;
-      };
+homeManagerModules.constellation-cursor = { config, lib, pkgs, ... }:
+  import ./nix/hm-module.nix {
+    inherit config lib pkgs;
+    constellationCursorPkg = self.packages.${pkgs.system}.default;
+  };
     };
 }
