@@ -1,4 +1,4 @@
-{ pkgs, src ? ./. }:
+{ pkgs, self }:
 
 pkgs.rustPlatform.buildRustPackage rec {
   pname = "the-constellation-cursor";
