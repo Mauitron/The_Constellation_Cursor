@@ -4,7 +4,7 @@ pkgs.rustPlatform.buildRustPackage rec {
   pname = "the-constellation-cursor";
   version = "0.1.0";
 
-  inherit src; 
+  src = self; 
 
   cargoLock = {
     lockFile = "${src}/Cargo.lock";

@@ -17,7 +17,7 @@
       packages = forAllSystems (system:
         let pkgs = mkPkgs system;
         in {
-          the-constellation-cursor = pkgs.callPackage ./nix/default.nix {src = self;};
+          the-constellation-cursor = pkgs.callPackage ./nix/default.nix {inherit self;};
           default = self.packages.${system}.the-constellation-cursor;
         }
       );
