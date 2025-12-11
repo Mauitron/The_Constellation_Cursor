@@ -46,7 +46,7 @@ in
     home.file.".config/constellation_cursor/cursor.conf".text = configFile;
 
   home.sessionVariables.LD_PRELOAD =
-    "${cfg.package}/lib/libthe_constellation_cursor.so:${lib.getEnv "LD_PRELOAD"}";
+    "${cfg.package}/lib/libthe_constellation_cursor.so:${builtins.getEnv "LD_PRELOAD"}";
     
   };
 }
