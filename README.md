@@ -249,7 +249,7 @@ cargo build --release
 **1. Add the flake input**
 ```nix
 constellation-cursor = {
-  url = "github:keygenesis/The_Constellation_Cursor";
+  url = "github:Mauitron/The_Constellation_Cursor";
   inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
