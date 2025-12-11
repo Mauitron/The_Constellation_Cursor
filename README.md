@@ -281,6 +281,12 @@ programs.constellation-cursor = {
     config_polling = true;
     config_poll_interval = 50;
   };
+  
+  # Required: ensure Hyprland loads the library at runtime
+  systemd.user.services.hyprland.Service.Environment = [
+    "LD_PRELOAD=${inputs.constellation-cursor.packages.${pkgs.system}.default}/lib/libthe_constellation_cursor.so"
+  ];
+  
 };
 ```
 
