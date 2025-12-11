@@ -290,7 +290,7 @@ Write the configuration file to ~/.config/constellation_cursor/cursor.conf
 
 Set LD_PRELOAD to load the cursor library
 
-**A logout/login may be required after rebuilding**
+**Note:** A logout/login may be required after rebuilding
 
 ## Usage
 
