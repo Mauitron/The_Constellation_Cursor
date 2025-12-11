@@ -281,22 +281,8 @@ programs.constellation-cursor = {
     config_polling = true;
     config_poll_interval = 50;
   };
-  
-  # Required: ensure Hyprland loads the library at runtime
-  systemd.user.services.hyprland.Service.Environment = [
-    "LD_PRELOAD=${inputs.constellation-cursor.packages.${pkgs.system}.default}/lib/libthe_constellation_cursor.so"
-  ];
-  
 };
 ```
-
-**The module will:**
-
-Write the configuration file to ~/.config/constellation_cursor/cursor.conf
-
-Set LD_PRELOAD to load the cursor library
-
-**Note:** A logout/login may be required after rebuilding
 
 ## Usage
 
