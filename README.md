@@ -227,7 +227,7 @@ Limitations
 
 As I am currently on Hyprland, I will be using it in the examples.
 You do not need to use Hyprland for the cursor to work. It bypasses
-the Wayland compositor by using evdev and intercepting instructions
+the Wayland compositor by intercepting instructions
 between the compossitor and the drm cursor plane.
 
 ### From Source
